@@ -15,6 +15,8 @@ const Booking = require('./models/Booking.js');
 const { connectionUrl } = require('./urls.js')
 require('dotenv').config()
 
+console.log(connectionUrl)
+
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'asdfghj';
 
