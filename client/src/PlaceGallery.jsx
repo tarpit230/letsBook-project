@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BASE_URL } from "./App"
 
 export default function PlaceGallery({place}){
     const [showAllPhotos, setShowAllPhotos] = useState(false);
@@ -18,7 +19,7 @@ export default function PlaceGallery({place}){
                 </div>
                 {place?.photos?.length > 0 && place.photos.map(photo => {
                     <div>
-                        <img src={'http://localhost:4000/uploads/'+photo} alt="cant render" />
+                        <img src={`${BASE_URL}/uploads/`+photo} alt="cant render" />
                     </div>
                 })}
             </div>
@@ -32,17 +33,17 @@ export default function PlaceGallery({place}){
                     <div>
                         {place.photos?.[0] && (
                             <div>
-                                <img onClick={() => setShowAllPhotos(true)} className="aspect-square cursor-pointer object-cover" src={'http://localhost:4000/uploads/'+place.photos[0]} alt="can't render image" />
+                                <img onClick={() => setShowAllPhotos(true)} className="aspect-square cursor-pointer object-cover" src={`${BASE_URL}/uploads/`+place.photos[0]} alt="can't render image" />
                             </div>
                         )}
                     </div>
                     <div className="grid">
                         {place.photos?.[1] && (
-                            <img onClick={() => setShowAllPhotos(true)} className="aspect-square cursor-pointer object-cover" src={'http://localhost:4000/uploads/'+place.photos[1]} alt="can't render image" />
+                            <img onClick={() => setShowAllPhotos(true)} className="aspect-square cursor-pointer object-cover" src={`${BASE_URL}/uploads/`+place.photos[1]} alt="can't render image" />
                         )}
                         <div className="border-red-500 overflow-hidden">
                             {place.photos?.[2] && (
-                                <img onClick={() => setShowAllPhotos(true)} className="aspect-square cursor-pointer object-cover top-2" src={'http://localhost:4000/uploads/'+place.photos[2]} alt="can't render image" />
+                                <img onClick={() => setShowAllPhotos(true)} className="aspect-square cursor-pointer object-cover top-2" src={`${BASE_URL}/uploads/`+place.photos[2]} alt="can't render image" />
                             )}
                         </div>
                     </div>
