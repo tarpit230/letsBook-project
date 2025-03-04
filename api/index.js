@@ -12,7 +12,7 @@ const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const Booking = require('./models/Booking.js');
-const { connectionUrl } = require('./urls.js')
+// const { connectionUrl } = require('./urls.js')
 require('dotenv').config()
 
 const PORT = process.env.PORT;

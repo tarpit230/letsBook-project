@@ -13,8 +13,8 @@ import PlacePage from './pages/PlacePage';
 import BookingsPage from './pages/BookingsPage';
 import BookingPage from './pages/BookingPage';
 
-// axios.defaults.baseURL = 'https://letsbook-m0kt.onrender.com';
-axios.defaults.baseURL = 'http://localhost:4000';
+axios.defaults.baseURL = 'https://letsbook-m0kt.onrender.com';
+// axios.defaults.baseURL = 'http://localhost:4000';
 axios.defaults.withCredentials = true;
 
 function App(){
