@@ -15,7 +15,10 @@ const Booking = require('./models/Booking.js');
 const { connectionUrl } = require('./urls.js')
 require('dotenv').config()
 
-console.log(connectionUrl)
+const PORT = process.env.PORT;
+const BASE_URL = process.env.BASE_URL;
+const MONGO_URL = process.env.MONGO_URL;
+const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'asdfghj';
@@ -24,12 +27,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname+'/uploads'));
 app.use(cors({
-    origin: connectionUrl,
+    origin: CORS_ORIGIN,
     credentials: true,
     methods: ["GET", "POST","PUT"]
 }));
 
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(MONGO_URL)
     .then(() => console.log("Mongodb connected"))
 
 function getUserDataFromToken(req){
@@ -204,6 +207,7 @@ app.get('/bookings', async (req, res)  => {
     res.json(await Booking.find({user:userData.id}).populate('place'));
 })
 
-app.listen(4000, () => {
-    console.log("Server running on port 4000")
+app.listen(
+    PORT, () => {
+    console.log(`Server running on ${BASE_URL}`)
 });
