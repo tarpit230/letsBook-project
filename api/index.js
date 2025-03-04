@@ -20,6 +20,8 @@ const BASE_URL = process.env.BASE_URL;
 const MONGO_URL = process.env.MONGO_URL;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 
+console.log(CORS_ORIGIN)
+
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'asdfghj';
 
