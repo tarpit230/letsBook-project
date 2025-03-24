@@ -4,9 +4,14 @@ import { BASE_URL } from "./App";
 export default function PlaceGallery({ place }) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
+  console.log(BASE_URL)
+
   if (showAllPhotos) {
     return (
-      <div className="absolute inset-0 bg-black text-white min-h-screen">
+      <div className={`absolute inset-0 bg-black text-white min-h-screen
+       transition duration-500 ease-in-out 
+       ${showAllPhotos ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+       >
         <div className="bg-black p-8 grid gap-4">
           <div>
             <h2 className="text-3xl mr-48">Photos of {place.title}</h2>
@@ -31,6 +36,7 @@ export default function PlaceGallery({ place }) {
               close photos
             </button>
           </div>
+          
           {place?.photos?.length > 0 &&
             place.photos.map((photo, index) => (
               <div key={index}>
@@ -44,15 +50,15 @@ export default function PlaceGallery({ place }) {
 
   return (
     <div className="relative">
-      <div className="grid gap-2 grid-cols-[2fr_1fr] rounded-3xl overflow-hidden">
+      <div className="grid gap-2 grid-cols-[2fr_1fr] max-h-[70vh] rounded-3xl overflow-hidden">
         <div>
           {place.photos?.[0] && (
             <div>
               <img
                 onClick={() => setShowAllPhotos(true)}
-                className="aspect-square cursor-pointer object-cover"
+                className="aspect-Widescreen cursor-pointer object-cover"
                 src={`${BASE_URL}/uploads/` + place.photos[0]}
-                alt="can't render image"
+                alt="can't render"
               />
             </div>
           )}
@@ -63,7 +69,7 @@ export default function PlaceGallery({ place }) {
               onClick={() => setShowAllPhotos(true)}
               className="aspect-square cursor-pointer object-cover"
               src={`${BASE_URL}/uploads/` + place.photos[1]}
-              alt="can't render image"
+              alt="can't render"
             />
           )}
           <div className="border-red-500 overflow-hidden">
@@ -72,7 +78,7 @@ export default function PlaceGallery({ place }) {
                 onClick={() => setShowAllPhotos(true)}
                 className="aspect-square cursor-pointer object-cover top-2"
                 src={`${BASE_URL}/uploads/` + place.photos[2]}
-                alt="can't render image"
+                alt="can't render"
               />
             )}
           </div>
@@ -96,7 +102,7 @@ export default function PlaceGallery({ place }) {
             d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
           />
         </svg>
-        Show more photos
+        Show All Photos
       </button>
     </div>
   );
