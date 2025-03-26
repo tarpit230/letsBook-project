@@ -2,6 +2,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
+import { ShowSuccessToast, ShowErrorToast } from "../components/Notification"
 
 export default function LoginPage(){
     const [email, setEmail] = useState('');
@@ -14,10 +15,10 @@ export default function LoginPage(){
         try {
             const {data} = await axios.post('/login', {email, password}, {withCredentials: true});
             setUser(data);
-            alert('LogIn successful');
+            ShowSuccessToast('LogIn successful');
             setRedirect(true);
         } catch (e) {
-            alert("LogIn Failed");
+            ShowErrorToast("LogIn Failed");
         }
     }
 
