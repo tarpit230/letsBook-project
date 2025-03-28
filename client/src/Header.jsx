@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { UserContext } from "./UserContext";
+import { UserContext } from "./store/UserContext";
 
 export default function Header() {
   const { user } = useContext(UserContext);

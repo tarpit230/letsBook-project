@@ -1,24 +1,29 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../store/UserContext";
 import { ShowSuccessToast, ShowErrorToast } from "../components/Notification"
+import { useToast } from "../store/ToastContext";
 
 export default function LoginPage(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
     const {setUser} = useContext(UserContext);
+    const { showToast } = useToast();
 
     async function handleLoginSubmit(ev){
         ev.preventDefault();
         try {
             const {data} = await axios.post('/login', {email, password}, {withCredentials: true});
             setUser(data);
-            ShowSuccessToast('LogIn successful');
-            setRedirect(true);
+            if(data.status == 401) showToast("Invalid Credentials!", "error");
+            else{
+                showToast('LogIn successful', "success");
+                setRedirect(true);
+            } 
         } catch (e) {
-            ShowErrorToast("LogIn Failed");
+            showToast("LogIn Failed", "error");
         }
     }
 

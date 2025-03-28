@@ -79,7 +79,7 @@ app.post('/login', async (req, res) => {
             res.status(422).json('pass not ok');
         }
     } else {
-        res.json('not found');
+        res.json({ status: 401, message: "Incorrect credentials!" });
     }
 });
 
