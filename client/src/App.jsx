@@ -14,8 +14,8 @@ import BookingsPage from "./pages/BookingsPage";
 import BookingPage from "./pages/BookingPage";
 import { ToastProvider } from "./store/ToastContext";
 
-// export const BASE_URL = "http://localhost:4000";
-export const BASE_URL='https://letsbook-m0kt.onrender.com'
+export const BASE_URL = "http://localhost:4000";
+// export const BASE_URL='https://letsbook-m0kt.onrender.com'
 
 axios.defaults.baseURL = BASE_URL;
 axios.defaults.withCredentials = true;

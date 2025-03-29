@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useToast } from "../store/ToastContext";
 
 export default function RegisterPage(){
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { showToast } = useToast();
 
     async function registerUser(ev){
         ev.preventDefault();
@@ -15,9 +17,9 @@ export default function RegisterPage(){
                 email,
                 password
             });
-            alert('Registration successful')
+            showToast('Registration successful', 'success')
         } catch (e) {
-            alert('Registration Failed');
+            showToast('Registration Failed', 'error');
         }
         
     }

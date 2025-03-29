@@ -2,7 +2,6 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { UserContext } from "../store/UserContext";
-import { ShowSuccessToast, ShowErrorToast } from "../components/Notification"
 import { useToast } from "../store/ToastContext";
 
 export default function LoginPage(){
