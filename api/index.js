@@ -20,8 +20,6 @@ const BASE_URL = process.env.BASE_URL;
 const MONGO_URL = process.env.MONGO_URL;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 
-console.log(CORS_ORIGIN)
-
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'asdfghj';
 
@@ -39,8 +37,12 @@ mongoose.connect(MONGO_URL)
 
 function getUserDataFromToken(req){
     return new Promise((resolve, reject) => {
+        const token = req.cookies?.token;
+        if(!token){
+            return reject(new Error("jwt is missing"));
+        }
         jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
-            if (err) throw err;
+            if (err) return reject(err);
             resolve(userData);
         });
     })   
@@ -76,10 +78,10 @@ app.post('/login', async (req, res) => {
                 res.cookie('token', token).json(userDoc);
             })
         } else {
-            res.status(422).json('pass not ok');
+            res.status(422).json('Incorrect password');
         }
     } else {
-        res.json({ status: 401, message: "Incorrect credentials!" });
+        res.status(401).json({ message: "Invalid credentials!" });
     }
 });
 
@@ -89,15 +91,16 @@ app.get('/profile', (req, res) => {
         jwt.verify(token, jwtSecret, {}, async (err, userData) => {
             if (err) throw err;
             const userDoc = await User.findById(userData.id);
-            res.json(userData);
+            res.json(userDoc);
         });
     } else {
-        res.json(null);
+        res.json({ message: "No User Found"});
     }
 });
 
 app.post('/logout', (req, res) => {
-    res.cookie('token', '').json(true);
+    res.clearCookie('token', { path: '/' }); 
+    res.status(200).json({ message: 'Logged out successfully' });
 })
 
 app.post('/upload-by-link', async (req, res) => {
@@ -191,7 +194,7 @@ app.get('/places', async (req, res) => {
 
 app.post('/bookings', async (req, res) => {
     const userData = await getUserDataFromToken(req);
-    const {place,checkIn,checkOut,numberOfGuests,name,phone,price} = req.body;
+    const { place, checkIn, checkOut, numberOfGuests, name, phone, price } = req.body;
     Booking.create({
         place,checkIn,checkOut,numberOfGuests,name,phone,price,
         user:userData.id,
