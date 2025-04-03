@@ -1,6 +1,31 @@
+import axios from "axios";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useToast } from "../store/ToastContext";
+import { useState } from "react";
 
 export default function ForgotPassword({ setShowDialog }) {
+    const { showToast } = useToast();
+    const [email, setEmail] = useState();
+    const [newPassword, setNewPassword] = useState();
+
+    async function handleForgotPassword(e) {
+        e.preventDefault();
+        try {
+            const res = await axios.post('/change-password', { email, newPassword }, {withCredentials: true});
+            console.log("success", res.success)
+            if(res.data.success) {
+                showToast(res.data.message, "success");
+            }
+            else {
+                showToast(res.data.message, "error");
+            }
+            setEmail("");
+            setNewPassword("") 
+        } catch (error) {
+            showToast("Something Went Wrong!", "error");
+        }
+    }
+
     return (
         <div className=" w-[100%] h-[90vh] flex justify-center items-center">
             <div className="flex flex-col justify-start min-w-[350px] h-auto 
@@ -10,16 +35,16 @@ export default function ForgotPassword({ setShowDialog }) {
                         onClick={() => setShowDialog(false)}>
                         <button type="button"><IoMdArrowRoundBack /></button>
                     </div>
-                    <form className="w-[100%]">
+                    <form className="w-[100%]" onSubmit={handleForgotPassword}>
                         <div className="mt-1">
                             <p>Enter your Email:</p>
                             <input className="border border-gray-300" type="email" name="email" id="emailId"
-                                placeholder="abc@gmail.com" required />
+                                placeholder="abc@gmail.com" onChange={(e) => setEmail(e.target.value)} required />
                         </div>
                         <div className="mt-1">
                             <p>Enter New Password:</p>
                             <input className="border border-gray-300" type="password" name="newPassword"
-                             id="newPasswordId" placeholder="******" required />
+                             id="newPasswordId" placeholder="******" onChange={(e) => setNewPassword(e.target.value)} required />
                         </div>
                         <div className="mt-1">
                             <p>Confirm New Password:</p>
