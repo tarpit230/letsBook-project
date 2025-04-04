@@ -11,7 +11,7 @@ export default function ProfilePage(){
 
     let {subpage} = useParams();
     console.log("subpage", subpage)
-    if(subpage === undefined){
+    if(user?.message !== "No User Found" && subpage === undefined){
         subpage = 'profile';
     }
 

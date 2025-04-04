@@ -19,7 +19,7 @@ export default function Header() {
     };
   }, []);
 
-
+  console.log("user", user)
   
 
   return (
@@ -67,7 +67,7 @@ export default function Header() {
       </div>
 
       <Link
-        to={user && "/account"}
+        to={user?.message !== "No User Found" && "/account"}
         onClick={(e) => {
           e.stopPropagation();
           setOpenMenu(true);
@@ -107,7 +107,7 @@ export default function Header() {
         {!!user && <div>{user.name}</div>}
       </Link>
 
-      {!user && openMenu && (
+      {user?.message === "No User Found" && openMenu && (
         <div className="absolute top-16 right-8 border border-gray-200 bg-white rounded-lg flex flex-col justify-center">
           <Link to={"/login"} className="py-3 px-5 hover:bg-gray-100">
             Login
