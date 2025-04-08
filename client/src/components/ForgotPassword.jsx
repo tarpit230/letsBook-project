@@ -1,37 +1,20 @@
 import axios from "axios";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useToast } from "../store/ToastContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { BASE_URL } from "../App";
 
 export default function ForgotPassword({ setShowDialog }) {
     const { showToast } = useToast();
     const [email, setEmail] = useState();
-    const [newPassword, setNewPassword] = useState();
 
-    async function handleForgotPassword(e) {
+    async function sendResetLink(e) {
         e.preventDefault();
         try {
-            const res = await axios.post('/change-password', { email, newPassword }, {withCredentials: true});
-            if(res.data.success) {
-                showToast(res.data.message, "success");
-            }
-            else {
-                showToast(res.data.message, "error");
-            }
-            setEmail("");
-            setNewPassword("") 
-        } catch (error) {
-            showToast("Something Went Wrong!", "error");
-        }
-    }
-
-    async function handleOtp(e) {
-        e.preventDefault();
-        try {
-            const res = await axios.post('/send-otp', { email }, { withCredentials: true });
+            const res = await axios.post('auth/send-link', { email }, { withCredentials: true });
             showToast(res.data.message, "success");
         } catch (error) {
-            showToast("Could Not Send Otp!", "error");
+            showToast("Error Sending Reset Password Link!", "error");
         }
     }
 
@@ -44,28 +27,18 @@ export default function ForgotPassword({ setShowDialog }) {
                         onClick={() => setShowDialog(false)}>
                         <button type="button"><IoMdArrowRoundBack /></button>
                     </div>
-                    <form className="w-[100%]" onSubmit={handleOtp}>
+                    <form className="w-[100%]" onSubmit={sendResetLink}>
                         <div className="mt-1">
                             <p>Enter your Email:</p>
                             <input className="border border-gray-300" type="email" name="email" id="emailId"
                                 placeholder="abc@gmail.com" onChange={(e) => setEmail(e.target.value)} required />
                         </div>
                         <button type="submit" className="w-[100%] px-2 py-1 bg-[#EC5228] text-white rounded-md mt-2">
-                            Request Otp</button>
+                            Submit</button>
                     </form>
-                    {/* <div className="mt-1">
-                            <p>Enter New Password:</p>
-                            <input className="border border-gray-300" type="password" name="newPassword"
-                             id="newPasswordId" placeholder="******" onChange={(e) => setNewPassword(e.target.value)} required />
-                        </div>
-                        <div className="mt-1">
-                            <p>Confirm New Password:</p>
-                            <input className="border border-gray-300" type="password" name="confirmPassword"
-                             id="confirmPasswordId" placeholder="******" required />
-                        </div>
-                        <button type="submit" className="w-[100%] px-2 py-1 bg-[#EC5228] text-white rounded-md mt-2">
-                            Reset Password</button> */}
+                    
             </div>
         </div>
     );
 }
+

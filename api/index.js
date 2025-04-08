@@ -114,16 +114,16 @@ app.post("/logout", (req, res) => {
 
 app.post("/change-password", async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
-    const user = await User.findOne({ email });
+    const { userId, confirmPassword } = req.body;
+    const user = await User.findOne({ userId });
     if (!user) {
       return res.json({
         success: false,
-        message: "Email not found. Please enter a registered email.",
+        message: "User not found.",
       });
     }
 
-    const updatedPassword = bcrypt.hashSync(newPassword, bcryptSalt);
+    const updatedPassword = bcrypt.hashSync(confirmPassword, bcryptSalt);
     user.password = updatedPassword;
     await user.save();
     res.json({

@@ -13,6 +13,7 @@ import PlacePage from "./pages/PlacePage";
 import BookingsPage from "./pages/BookingsPage";
 import BookingPage from "./pages/BookingPage";
 import { ToastProvider } from "./store/ToastContext";
+import ResetPasswordPage from "./components/ResetPasswordPage";
 
 // export const BASE_URL = "http://localhost:4000";
 export const BASE_URL='https://letsbook-m0kt.onrender.com'
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/place/:id" element={<PlacePage />} />
                 <Route path="/account/bookings" element={<BookingsPage />} />
                 <Route path="/account/bookings/:id" element={<BookingPage />} />
+                <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
               </Route>
             </Routes>
           </BrowserRouter>
