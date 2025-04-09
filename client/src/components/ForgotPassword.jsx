@@ -5,16 +5,19 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../App";
 
 export default function ForgotPassword({ setShowDialog }) {
-    const { showToast } = useToast();
+    const { showToast, Loader, loading, setLoading } = useToast();
     const [email, setEmail] = useState();
 
     async function sendResetLink(e) {
         e.preventDefault();
+        setLoading(true)
         try {
             const res = await axios.post('auth/send-link', { email }, { withCredentials: true });
             showToast(res.data.message, "success");
         } catch (error) {
             showToast("Error Sending Reset Password Link!", "error");
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -34,7 +37,7 @@ export default function ForgotPassword({ setShowDialog }) {
                                 placeholder="abc@gmail.com" onChange={(e) => setEmail(e.target.value)} required />
                         </div>
                         <button type="submit" className="w-[100%] px-2 py-1 bg-[#EC5228] text-white rounded-md mt-2">
-                            Submit</button>
+                            {loading ? <Loader size="30px" color="#fff" /> : 'Submit'}</button>
                     </form>
                     
             </div>

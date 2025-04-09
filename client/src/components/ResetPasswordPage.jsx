@@ -2,6 +2,7 @@ import { useToast } from "../store/ToastContext";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../App";
 import axios from "axios";
+import { useParams, useNavigate } from 'react-router-dom';
 
 export default function ResetPasswordPage() {
   const { showToast } = useToast();
@@ -9,17 +10,20 @@ export default function ResetPasswordPage() {
   const [userId, setUserId] = useState(null);
   const [newPassword, setNewPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
+  const { token } = useParams();
+  const  navigate  = useNavigate();
 
   async function handleForgotPassword(e) {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "/change-password",
+        "/auth/change-password",
         { userId, confirmPassword },
         { withCredentials: true }
       );
       if (res.data.success) {
         showToast(res.data.message, "success");
+        navigate('/');
       } else {
         showToast(res.data.message, "error");
       }
@@ -30,7 +34,7 @@ export default function ResetPasswordPage() {
 
   async function sendTokenForValidation() {
     try {
-      const res = await axios.get(`${BASE_URL}/auth/verify-link`);
+      const res = await axios.get(`${BASE_URL}/auth/verify-link/${token}`);
       if (res.data.success) {
         setShowPage(true);
         setUserId(res.data.userId);

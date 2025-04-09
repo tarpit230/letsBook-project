@@ -19,10 +19,10 @@ export const ToastProvider = ({ children }) => {
         })
     }
 
-    const Loader = ({ size = "50px" }) => {
+    const Loader = ({ size = "50px", color = "#EC5228" }) => {
         return (
           <div className="loader-container">
-            <div className="loader" style={{ width: size, height: size, borderColor: '#EC5228 transparent transparent transparent' }}></div>
+            <div className="loader" style={{ width: size, height: size, borderColor: `${color} transparent transparent transparent` }}></div>
           </div>
         );
       };

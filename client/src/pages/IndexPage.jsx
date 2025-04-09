@@ -41,7 +41,7 @@ export default function IndexPage() {
     <>
       {loading ? (
         <div className="flex items-center justify-center h-[70vh]">
-            <Loader size="70px" />
+            <Loader size="70px" color="#EC5228" />
         </div>
       ) : (
         <div className="mt-8 grid gap-x-6 gap-y-8 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

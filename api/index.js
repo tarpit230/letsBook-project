@@ -112,33 +112,7 @@ app.post("/logout", (req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 });
 
-app.post("/change-password", async (req, res) => {
-  try {
-    const { userId, confirmPassword } = req.body;
-    const user = await User.findOne({ userId });
-    if (!user) {
-      return res.json({
-        success: false,
-        message: "User not found.",
-      });
-    }
 
-    const updatedPassword = bcrypt.hashSync(confirmPassword, bcryptSalt);
-    user.password = updatedPassword;
-    await user.save();
-    res.json({
-      success: true,
-      password: user.password,
-      message: "Password updated successfully",
-    });
-
-  } catch (error) {
-    res.status(500).json({
-        success: false,
-        message: "Something went wrong. Please try again later.",
-      });
-  }
-});
 
 app.post("/upload-by-link", async (req, res) => {
   try {
