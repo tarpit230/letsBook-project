@@ -23,6 +23,19 @@ export default function RegisterPage(){
         }
         
     }
+
+    async function handleEmailVerification() {
+        try {
+            const res = await axios.post(``, { email }, { withCredentials: true });
+            if(res.data.success){
+                showToast('Email successfully validated', 'success');
+            } else {
+                showToast('Please Enter a valid E-mail', 'error');
+            }
+        } catch (error) {
+            showToast('Email Verification Failed', 'error');
+        }
+    }
     
     return (
         <div className="mt-4 grow flex items-center justify-around">
@@ -32,9 +45,14 @@ export default function RegisterPage(){
                 <input type="text" placeholder="Arpit Tripathi"
                        value={name}
                        onChange={ev => setName(ev.target.value)} />
-                <input type="email" placeholder={'your@email.com'}
-                        value={email}
-                        onChange={ev => setEmail(ev.target.value)} />
+                <div className="relative">
+                    <input type="email" placeholder={'your@email.com'}
+                            value={email}
+                            onChange={ev => setEmail(ev.target.value)} />
+                    <button className="px-3 py-1 rounded-2xl absolute right-2 top-2.5"
+                        onClick={handleEmailVerification}
+                    >Verify</button>        
+                </div>
                 <input type="password" placeholder="password"
                         value={password}
                         onChange={ev => setPassword(ev.target.value)}  />
