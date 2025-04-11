@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useToast } from "../store/ToastContext";
@@ -12,12 +12,12 @@ export default function RegisterPage(){
     async function registerUser(ev){
         ev.preventDefault();
         try{
-            await axios.post('/register', {
+            await axios.post('/auth/register', {
                 name,
                 email,
                 password
             });
-            showToast('Registration successful', 'success')
+            showToast('Registration successful, Email verification mail sent via mail', 'success')
         } catch (e) {
             showToast('Registration Failed', 'error');
         }
@@ -25,17 +25,21 @@ export default function RegisterPage(){
     }
 
     async function handleEmailVerification() {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
         try {
-            const res = await axios.post(``, { email }, { withCredentials: true });
+            const res = await axios.post(`/auth/register/verify-token?token=${token}`, { email }, { withCredentials: true });
             if(res.data.success){
                 showToast('Email successfully validated', 'success');
-            } else {
-                showToast('Please Enter a valid E-mail', 'error');
             }
         } catch (error) {
             showToast('Email Verification Failed', 'error');
         }
     }
+
+    useEffect(() => {
+        handleEmailVerification();
+    }, [])
     
     return (
         <div className="mt-4 grow flex items-center justify-around">
@@ -45,13 +49,10 @@ export default function RegisterPage(){
                 <input type="text" placeholder="Arpit Tripathi"
                        value={name}
                        onChange={ev => setName(ev.target.value)} />
-                <div className="relative">
+                <div className="">
                     <input type="email" placeholder={'your@email.com'}
                             value={email}
                             onChange={ev => setEmail(ev.target.value)} />
-                    <button className="px-3 py-1 rounded-2xl absolute right-2 top-2.5"
-                        onClick={handleEmailVerification}
-                    >Verify</button>        
                 </div>
                 <input type="password" placeholder="password"
                         value={password}
