@@ -50,14 +50,22 @@ const sendEmailVerificationLink = async (req, res) => {
 
 const validateEmailVerificationLink = async (req, res) => {
   const token = req.query.token;
-  if (!token) {
-    return res.json({
+  if (!token || token === 'null') {
+    return res.status(200).json({
       success: false,
       message: "Email Verification token not Available.",
     });
   }
+  
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ email: decoded.email });
+    if(user.isVerified === true){
+      return res.status(200).json({
+        success: false,
+        message: "Email already verified",
+      })
+    }
     await User.updateOne({ email: decoded.email }, { isVerified: true });
     res.json({
       success: true,
