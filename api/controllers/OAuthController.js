@@ -17,6 +17,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
         })
     } catch (err) {
         res.json(400).json({
+            message: "No User Found",
             loggedIn: false,
             error: err,
         })
