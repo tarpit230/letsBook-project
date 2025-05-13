@@ -19,7 +19,7 @@ export default function Header() {
     };
   }, []);
 
-  console.log("user", user)
+  
   
 
   return (

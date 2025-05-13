@@ -3,7 +3,6 @@ const PasswordResetToken = require('../models/ResetPassword');
 async function createPasswordResetToken(userId) {
     await PasswordResetToken.deleteOne({ userId });
     const tokenDoc = new PasswordResetToken({ userId });
-    console.log("tokenDoc", tokenDoc);
     tokenDoc.save();
     return tokenDoc.token;
 }

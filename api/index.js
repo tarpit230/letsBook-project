@@ -13,7 +13,7 @@ const fs = require("fs");
 const path = require("path");
 const Booking = require("./models/Booking.js");
 const authRoutes = require("./routes/auth.js")
-// const { connectionUrl } = require('./urls.js')
+const { getUserDataFromToken } = require("./utils/tokenServices.js")
 require("dotenv").config();
 
 const PORT = process.env.PORT;
@@ -37,26 +37,13 @@ app.use(
 
 mongoose.connect(MONGO_URL).then(() => console.log("Mongodb connected"));
 
-function getUserDataFromToken(req) {
-  return new Promise((resolve, reject) => {
-    const token = req.cookies?.token;
-    if (!token) {
-      return reject(new Error("jwt is missing"));
-    }
-    jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
-      if (err) return reject(err);
-      resolve(userData);
-    });
-  });
-}
+
 
 app.use('/auth', authRoutes);
 
 app.get("/test", (req, res) => {
   res.json("test ok");
 });
-
-
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -145,30 +132,48 @@ app.post("/places", (req, res) => {
     maxGuests,
     price,
   } = req.body;
-  jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-    if (err) throw err;
-    const placeDoc = await Place.create({
-      owner: userData.id,
-      title,
-      address,
-      addedPhotos,
-      description,
-      perks,
-      extraInfo,
-      checkIn,
-      checkOut,
-      maxGuests,
-      price,
+  try {
+    jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+      if (err) throw err;
+      const placeDoc = await Place.create({
+        owner: userData.id,
+        title,
+        address,
+        photos: addedPhotos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price,
+      });
+      res.json(placeDoc);
     });
-    res.json(placeDoc);
-  });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+  
 });
 
 app.get("/user-places", (req, res) => {
   const { token } = req.cookies;
+  if(!token) return res.status(400).json({
+    message: "Invalid Request"
+  })
   jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-    const { id } = userData;
-    res.json(await Place.find({ owner: id }));
+    if (err) {
+      return res.status(401).json({ message: "Token verification failed" });
+    }
+
+    try {
+      const { id } = userData;
+      return res.json(await Place.find({ owner: id }));
+    } catch (dbError) {
+      console.error("DB Error:", dbError);
+      return res.status(500).json({ message: "Database error" });
+    }
+    
   });
 });
 
@@ -244,6 +249,11 @@ app.post("/bookings", async (req, res) => {
 app.options("/bookings", cors());
 app.get("/bookings", async (req, res) => {
   const userData = await getUserDataFromToken(req);
+  if(!userData){
+    return res.status(200).json({
+      message: "No Bookings Available!"
+    })
+  }
   res.json(await Booking.find({ user: userData.id }).populate("place"));
 });
 

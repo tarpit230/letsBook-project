@@ -15,12 +15,14 @@ export const GoogleLoginComponent = () => {
     const res = await fetch(`${BASE_URL}/auth/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({
         token: credentialResponse.credential,
       }),
     });
     const response = await res.json();
     setUser(response);
+    localStorage.setItem('user', JSON.stringify(response));
     if(response.loggedIn) navigate('/');
   }  
     
@@ -30,7 +32,7 @@ export const GoogleLoginComponent = () => {
         <GoogleLogin
           onSuccess={onSuccess}
           onError={() => {
-            console.log("Login Failed");
+            
           }}
         />
       </div>

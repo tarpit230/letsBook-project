@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AccountNav from "../AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -6,12 +6,16 @@ import PlaceImg from "../PlaceImg";
 
 
 export default function PlacesPage() {
+    const navigate = useParams();
     const [places, setPlaces] = useState([]);
+
     useEffect(() => {
         axios.get('/user-places', {withCredentials: true}).then(({data}) => {
+            if(data.message) navigate("/");
             setPlaces(data);
         })
     }, []);
+    
     return (
         <div>
             <AccountNav />
@@ -25,7 +29,7 @@ export default function PlacesPage() {
                 </div>
                 <div className="mt-4">
                     {places.length > 0 && places.map(place => (
-                        <Link key={place._id} to={'/account/places/'+place._id} className="flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl">
+                        <Link key={place._id} to={'/account/places/' + place._id} className="my-4 flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl">
                             <div className="flex w-32 h-32 bg-gray-300 grow shrink-0">
                                 <PlaceImg place={place} />
                             </div>

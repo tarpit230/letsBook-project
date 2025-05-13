@@ -10,7 +10,8 @@ export default function ProfilePage(){
     const {ready, user, setUser} = useContext(UserContext);
 
     let {subpage} = useParams();
-    console.log("subpage", subpage)
+    
+    
     if(user?.message !== "No User Found" && subpage === undefined){
         subpage = 'profile';
     }
@@ -18,6 +19,7 @@ export default function ProfilePage(){
     async function logout(){
         try {
             await axios.post('/logout', {withCredentials: true});
+            localStorage.removeItem("user")
             setUser(null);
             setRedirect('/');
         } catch(error) {
