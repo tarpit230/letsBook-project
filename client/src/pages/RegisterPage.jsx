@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useToast } from "../store/ToastContext";
 
@@ -8,6 +8,7 @@ export default function RegisterPage(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { showToast } = useToast();
+    const navigate = useNavigate();
 
     async function registerUser(ev){
         ev.preventDefault();
@@ -30,7 +31,10 @@ export default function RegisterPage(){
         try {
             const res = await axios.post(`/auth/register/verify-token?token=${token}`, { email }, { withCredentials: true });
             if(res.data.success){
-                showToast('Email successfully validated', 'success');
+                showToast(res.data.message, 'success');
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000)
             }
         } catch (error) {
             showToast('Email Verification Failed', 'error');

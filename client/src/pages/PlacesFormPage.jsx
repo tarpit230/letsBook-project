@@ -65,7 +65,7 @@ export default function PlacesFormPage() {
         const placeData = {title, address, addedPhotos,
             description, perks, extraInfo,
             checkIn, checkOut, maxGuests, price,
-        } 
+        }
         if(id){
             //update
             await axios.put('/places', {

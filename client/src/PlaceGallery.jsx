@@ -4,7 +4,7 @@ import { BASE_URL } from "./App";
 export default function PlaceGallery({ place }) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
-  console.log(BASE_URL)
+  
 
   if (showAllPhotos) {
     return (

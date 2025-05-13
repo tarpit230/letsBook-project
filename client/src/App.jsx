@@ -5,7 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Layout from "./Layout";
 import axios from "axios";
-import { UserContextProvider } from "./store/UserContext";
+import { UserContext, UserContextProvider } from "./store/UserContext";
 import ProfilePage from "./pages/ProfilePage";
 import PlacesPage from "./pages/PlacesPage";
 import PlacesFormPage from "./pages/PlacesFormPage";
@@ -14,6 +14,7 @@ import BookingsPage from "./pages/BookingsPage";
 import BookingPage from "./pages/BookingPage";
 import { ToastProvider } from "./store/ToastContext";
 import ResetPasswordPage from "./components/ResetPasswordPage";
+import { useContext, useEffect } from "react";
 
 // export const BASE_URL = "http://localhost:4000";
 export const BASE_URL='https://letsbook-m0kt.onrender.com'
@@ -22,6 +23,7 @@ axios.defaults.baseURL = BASE_URL;
 axios.defaults.withCredentials = true;
 
 function App() {
+
   return (
     <>
       <UserContextProvider>
@@ -45,7 +47,10 @@ function App() {
                 <Route path="/place/:id" element={<PlacePage />} />
                 <Route path="/account/bookings" element={<BookingsPage />} />
                 <Route path="/account/bookings/:id" element={<BookingPage />} />
-                <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+                <Route
+                  path="/reset-password/:token"
+                  element={<ResetPasswordPage />}
+                />
               </Route>
             </Routes>
           </BrowserRouter>

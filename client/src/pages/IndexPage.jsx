@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../App";
 import { useToast } from "../store/ToastContext";
+import { UserContext } from "../store/UserContext";
 
 export default function IndexPage() {
   const [places, setPlaces] = useState([]);
   const { loading, setLoading, Loader, showToast } = useToast();
+  const { setUser, setReady } = useContext(UserContext);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -21,7 +23,7 @@ export default function IndexPage() {
         setPlaces(response.data);
       } catch (error) {
         if (axios.isCancel(error)) {
-          console.log("Request canceled:", error.message);
+          
         } else {
           showToast("Failed to fetch Places", "error");
         }
@@ -36,6 +38,15 @@ export default function IndexPage() {
       controller.abort();
     };
   }, []);
+  
+    useEffect(() => {
+      let storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setReady(true);
+      }
+    }, []);
 
   return (
     <>

@@ -16,19 +16,19 @@ export default function BookingsPage(){
     return (
         <div>
             <AccountNav />
-            <div>
+            <div className="my-2">
                 {bookings?.length > 0 && bookings.map(booking => (
-                    <Link key={booking._id} to={`/account/bookings/${booking._id}`} className="flex gap-4 bg-gray-200 rounded-2xl overflow-hidden">
+                    <Link key={booking?._id} to={`/account/bookings/${booking?._id}`} className="my-4 flex gap-4 bg-gray-200 rounded-2xl overflow-hidden">
                         <div className="w-48">
-                            <PlaceImg place={booking.place} />
+                            <PlaceImg place={booking?.place} />
                         </div>
                         <div className="py-3 pr-3 grow">
-                            <h2 className="text-xl">{booking.place.title}</h2>
+                            <h2 className="text-xl">{booking?.place?.title}</h2>
                             <BookingDates booking={booking} className="items-center border-t border-gray-300 mt-2 py-2" />
                         </div>
                         <div className="text-xl">
-                            {differenceInCalendarDays(new Date(booking.checkOut), new Date(booking.checkIn))} nights
-                            | Total Price: ${booking.price}
+                            {differenceInCalendarDays(new Date(booking?.checkOut), new Date(booking?.checkIn))} nights
+                            | Total Price: ${booking?.price}
                         </div>
                     </Link>
                 ))}
