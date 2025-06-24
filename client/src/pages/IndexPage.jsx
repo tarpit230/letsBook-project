@@ -16,7 +16,7 @@ export default function IndexPage() {
     const fetchPlaces = async () => {
       setLoading(true);
       try {
-        const response = await axios.get("/places", {
+        const response = await axios.get("/api/places", {
           withCredentials: true,
           signal: controller.signal,
         });

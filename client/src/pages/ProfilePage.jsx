@@ -18,7 +18,7 @@ export default function ProfilePage(){
 
     async function logout(){
         try {
-            await axios.post('/logout', {withCredentials: true});
+            await axios.post('/auth/logout', {withCredentials: true});
             localStorage.removeItem("user")
             setUser(null);
             setRedirect('/');
@@ -48,7 +48,7 @@ export default function ProfilePage(){
                     <button onClick={logout} className="primary max-w-sm mt-2">Logout</button>
                 </div>
             )}
-            {subpage === 'places' && (
+            {(subpage === 'places' && user.role === "admin") && (
                 <PlacesPage />
             )}
         </div>

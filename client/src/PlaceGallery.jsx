@@ -4,20 +4,17 @@ import { BASE_URL } from "./App";
 export default function PlaceGallery({ place }) {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
-  
-
   if (showAllPhotos) {
     return (
-      <div className={`absolute inset-0 bg-black text-white min-h-screen
-       transition duration-500 ease-in-out 
-       ${showAllPhotos ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-       >
-        <div className="bg-black p-8 grid gap-4">
-          <div>
-            <h2 className="text-3xl mr-48">Photos of {place.title}</h2>
+      <div className="absolute inset-0 bg-black text-white min-h-screen z-50 overflow-scroll">
+        <div className="p-8 grid gap-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-3xl font-semibold">
+              Photos of {place.title}
+            </h2>
             <button
               onClick={() => setShowAllPhotos(false)}
-              className="fixed right-12 top-8 flex gap-1 py-2 px-4 rounded-2xl shadow shadow-black bg-white text-black"
+              className="flex items-center gap-2 py-2 px-4 rounded-2xl shadow bg-white text-black"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -30,19 +27,24 @@ export default function PlaceGallery({ place }) {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
+                  d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-              close photos
+              Close photos
             </button>
           </div>
-          
-          {place?.photos?.length > 0 &&
-            place.photos.map((photo, index) => (
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {place?.photos?.map((photo, index) => (
               <div key={index}>
-                <img src={`${BASE_URL}/uploads/` + photo} alt="cant render" />
+                <img
+                  src={`${BASE_URL}/uploads/${photo}`}
+                  alt={`Photo ${index}`}
+                  className="w-full h-[50vh] object-cover rounded-lg"
+                />
               </div>
             ))}
+          </div>
         </div>
       </div>
     );
@@ -50,43 +52,44 @@ export default function PlaceGallery({ place }) {
 
   return (
     <div className="relative">
-      <div className="grid gap-2 grid-cols-[2fr_1fr] max-h-[70vh] rounded-3xl overflow-hidden">
-        <div>
+      <div className="grid grid-cols-[1fr_1fr] gap-2 rounded-3xl max-h-[70vh] overflow-hidden">
+        <div className="overflow-hidden">
           {place.photos?.[0] && (
-            <div>
-              <img
-                onClick={() => setShowAllPhotos(true)}
-                className="aspect-Widescreen cursor-pointer object-cover"
-                src={`${BASE_URL}/uploads/` + place.photos[0]}
-                alt="can't render"
-              />
-            </div>
-          )}
-        </div>
-        <div className="grid">
-          {place.photos?.[1] && (
             <img
               onClick={() => setShowAllPhotos(true)}
-              className="aspect-square cursor-pointer object-cover"
-              src={`${BASE_URL}/uploads/` + place.photos[1]}
-              alt="can't render"
+              className="object-cover aspect-square cursor-pointer"
+              src={`${BASE_URL}/uploads/${place.photos[0]}`}
+              alt="Large"
             />
           )}
-          <div className="border-red-500 overflow-hidden">
-            {place.photos?.[2] && (
-              <img
-                onClick={() => setShowAllPhotos(true)}
-                className="aspect-square cursor-pointer object-cover top-2"
-                src={`${BASE_URL}/uploads/` + place.photos[2]}
-                alt="can't render"
-              />
-            )}
-          </div>
+        </div>
+        <div className="grid grid-rows-2 gap-2">
+          {place.photos?.[1] && (
+            <div className="overflow-hidden">
+            <img
+              onClick={() => setShowAllPhotos(true)}
+              className="w-full h-full object-cover cursor-pointer"
+              src={`${BASE_URL}/uploads/${place.photos[1]}`}
+              alt="Top Right"
+            />
+            </div>
+          )}
+          {/* {place.photos?.[2] && (
+            <div className="overflow-hidden">
+            <img
+              onClick={() => setShowAllPhotos(true)}
+              className="w-full h-full object-cover cursor-pointer"
+              src={`${BASE_URL}/uploads/${place.photos[2]}`}
+              alt="Bottom Right"
+            />
+            </div>
+          )} */}
         </div>
       </div>
+
       <button
         onClick={() => setShowAllPhotos(true)}
-        className=" flex gap-1 absolute bottom-2 right-2 py-2 px-4 bg-white rounded-2xl shadow shadow-md shadow-gray-500"
+        className="flex gap-1 absolute bottom-2 right-2 py-2 px-4 bg-white rounded-2xl shadow shadow-md shadow-gray-500"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
