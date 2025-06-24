@@ -17,7 +17,7 @@ const googleTokenVerification = async (req, res) => {
     const user = await User.findOne({ email });
 
     if(!user) {
-      user = await User.create({ name, email, password: "google_oauth", isVerified: false })
+      user = await User.create({ name, email, password: "google_oauth", role: "guest", isVerified: false })
     }
 
     const jwtToken = jwt.sign(
@@ -34,9 +34,11 @@ const googleTokenVerification = async (req, res) => {
       path: "/",
     });
     return res.status(200).json({
+      userId: user._id,
       loggedIn: true,
       name: payload.name,
       email: payload.email,
+      role: "guest"
     });
   } catch (err) {
     return res.status(400).json({

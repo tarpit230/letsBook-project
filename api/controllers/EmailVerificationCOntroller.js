@@ -8,7 +8,7 @@ const URL = process.env.CORS_ORIGIN;
 const bcryptSalt = bcrypt.genSaltSync(10);
 
 const sendEmailVerificationLink = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
   try {
     await User.deleteOne({ email });
     const existingUser = await User.findOne({ email });
@@ -19,6 +19,7 @@ const sendEmailVerificationLink = async (req, res) => {
         name,
         email,
         password: bcrypt.hashSync(password, bcryptSalt),
+        role,
         isVerified: false,
       });
     const token = jwt.sign({ email }, process.env.JWT_SECRET, {

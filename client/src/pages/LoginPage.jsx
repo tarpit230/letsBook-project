@@ -18,11 +18,12 @@ export default function LoginPage() {
     ev.preventDefault();
     try {
       const { data } = await axios.post(
-        "/login",
+        "/auth/login",
         { email, password },
         { withCredentials: true }
       );
       setUser(data);
+      localStorage.setItem("user",JSON.stringify(data));
       if (data.status == 401) showToast("Invalid Credentials!", "error");
       else {
         showToast("LogIn successful", "success");
