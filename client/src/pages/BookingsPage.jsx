@@ -5,19 +5,36 @@ import PlaceImg from "../PlaceImg";
 import {differenceInCalendarDays, format} from 'date-fns'
 import { Link } from "react-router-dom";
 import BookingDates from "../BookingDates";
+import { useToast } from "../store/ToastContext";
 
-export default function BookingsPage(){
+export default function BookingsPage() {
     const [bookings, setBookings] = useState([]);
-    useEffect(() => {
-        axios.get('/bookings', {withCredentials:true}).then(response => {
+    const { showToast, Loader, loading, setLoading } = useToast();
+
+    async function getBookings() {
+        setLoading(true)
+        try {
+            await axios.get('/api/bookings', {withCredentials:true}).then(response => {
             setBookings(response.data);
         })
+        } catch (error) {
+            showToast("Something went wrong!", "error");
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        getBookings();
     }, [])
+
     return (
         <div>
             <AccountNav />
             <div className="my-2">
-                {bookings?.length > 0 && bookings.map(booking => (
+                {loading ? 
+                    <div className="flex justify-center"><Loader size="50px" color="#EC5228" /></div>
+                : bookings?.length > 0 ? bookings.map(booking => (
                     <Link key={booking?._id} to={`/account/bookings/${booking?._id}`} className="my-4 flex gap-4 bg-gray-200 rounded-2xl overflow-hidden">
                         <div className="w-48">
                             <PlaceImg place={booking?.place} />
@@ -31,7 +48,11 @@ export default function BookingsPage(){
                             | Total Price: ${booking?.price}
                         </div>
                     </Link>
-                ))}
+                )) : 
+                    <div className="mt-4 flex justify-center font-semibold">
+                        No Bookings Yet!
+                    </div>
+                }
             </div>
         </div>
     );
