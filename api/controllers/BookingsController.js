@@ -40,23 +40,31 @@ async function createBookingController(req, res) {
 }
 
 async function getBookingsById(req, res) {
-  const userData = await getUserDataFromToken(req);
-  if (!userData) {
-    return res.status(200).json({
-      message: "No Bookings Available!",
-    });
+  try {
+    const userData = await getUserDataFromToken(req);
+    if (!userData) {
+      return res.status(200).json({
+        message: "No Bookings Available!",
+      });
+    }
+    res.json(await Booking.find({ user: userData.id }).populate("place"));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-  res.json(await Booking.find({ user: userData.id }).populate("place"));
 }
 
 async function getUserIdFromBookedPlace(req, res) {
-  const userData = await getUserDataFromToken(req);
-  if (!userData) {
-    return res.status(200).json({
-      message: "No Bookings Available!",
-    });
+  try{
+    const userData = await getUserDataFromToken(req);
+    if (!userData) {
+      return res.status(200).json({
+        message: "No Bookings Available!",
+      });
+    }
+    res.json(await Booking.find({}).populate("place"));
+  } catch(err) {
+    res.status(500).json({ error: err.message });
   }
-  res.json(await Booking.find({}).populate("place"));
 }
 
 module.exports = {
