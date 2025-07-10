@@ -10,12 +10,13 @@ import { UserContext } from "../store/UserContext";
 export default function BookingPage() {
   const { id } = useParams();
   const { user } = useContext(UserContext);
+
   const [booking, setBooking] = useState(null);
   useEffect(() => {
     if (id) {
       axios.get("/api/bookings", { withCredentials: true }).then((response) => {
         const foundBooking = response.data.find(({ _id }) => _id === id);
-        console.log("foundBooking", foundBooking);
+
         if (foundBooking) {
           setBooking(foundBooking);
         }
@@ -30,12 +31,12 @@ export default function BookingPage() {
   return (
     <div className="my-8">
       <h1 className="text-3xl">{booking.place.title}</h1>
-      <div className="flex justify-between">
-        <AddressLink className="my-2 block">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <AddressLink className="text-sm text-blue-700">
           {booking.place.address}
         </AddressLink>
         <ChatComponent
-          currentUserId={id}
+          currentUserId={user._id}
           managerUserId={booking.place.owner}
           user={user}
           title="Talk to Manager"

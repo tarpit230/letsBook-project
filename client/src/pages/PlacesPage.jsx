@@ -11,7 +11,8 @@ export default function PlacesPage() {
   const navigate = useParams();
   const [places, setPlaces] = useState([]);
   const { user } = useContext(UserContext);
-  const [managerUserId, setManagerUserId] = useState();
+  const [managerUserId, setManagerUserId] = useState([]);
+  const [allNames, setAllNames] = useState([]);
   const { showToast, Loader, loading, setLoading } = useToast();
 
   async function getUserPlaces() {
@@ -35,15 +36,19 @@ export default function PlacesPage() {
   }, []);
 
   useEffect(() => {
+    if (!user?._id) return;
     axios
       .get("/api/bookings/all", { withCredentials: true })
       .then(({ data }) => {
         let newData = data.filter((elem) => elem.place?.owner === user?._id);
-        setManagerUserId(newData[0]?._id);
+        let allNames = newData.map((elem) => elem.name)
+        setAllNames(allNames);
+        let allIds = newData.map((elem) => elem.user)
+        setManagerUserId(allIds);
       });
-  }, []);
+  }, [user?._id]);
 
-  console.log("managerUserId", managerUserId);
+  
 
   return (
     <div>
@@ -76,6 +81,7 @@ export default function PlacesPage() {
               managerUserId={managerUserId}
               user={user}
               title="Talk to Customer"
+              allNames={allNames}
             />
           </div>
         )}

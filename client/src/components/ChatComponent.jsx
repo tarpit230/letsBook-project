@@ -3,50 +3,44 @@ import io from "socket.io-client";
 import axios from "axios";
 import { BASE_URL } from "../App";
 
-const ChatComponent = ({ currentUserId, managerUserId, user, title }) => {
+const ChatComponent = ({ currentUserId, managerUserId, user, title, allNames }) => {
   const [showChat, setShowChat] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [mySocketId, setMySocketId] = useState();
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null); // { userId }
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
-
-  const getRoomId = (userA, userB) => [userA, userB].sort().join("-");
-  const roomId = getRoomId(currentUserId, managerUserId);
+  const roomIdRef = useRef();
 
   const SOCKET_SERVER_URL = BASE_URL;
 
-  useEffect(() => {
-    if (showChat && !socketRef.current) {
-      socketRef.current = io(SOCKET_SERVER_URL, {
-        transports: ["websocket"],
-      });
+  const getRoomId = (userA, userB) => [userA, userB].sort().join("-");
 
-      socketRef.current.on("connect", () => {
-        setMySocketId(socketRef.current.id);
-        socketRef.current.emit("joinRoom", { roomId });
-      });
-
-      socketRef.current.on("chat message", (msg) => {
-        const isSelf = msg.senderId === currentUserId;
-        setMessages((prev) => [...prev, { ...msg, self: isSelf }]);
-      });
-
-      getAllMessages();
+  const connectSocket = (roomId) => {
+    if (socketRef.current) {
+      socketRef.current.disconnect();
     }
 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.off("chat message");
-        socketRef.current.off("connect");
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
-    };
-  }, [showChat]);
+    socketRef.current = io(SOCKET_SERVER_URL, {
+      transports: ["websocket"],
+    });
 
-  const getAllMessages = async () => {
+    socketRef.current.on("connect", () => {
+      socketRef.current.emit("joinRoom", { roomId });
+    });
+
+    socketRef.current.on("chat message", (msg) => {
+      const isSelf = msg.senderId === currentUserId;
+      const newMsg = { ...msg, self: isSelf };
+
+      setMessages((prev) => {
+        const isCurrentRoom = msg.roomId === roomIdRef.current;
+        return isCurrentRoom ? [...prev, newMsg] : prev;
+      });
+    });
+  };
+
+  const getAllMessages = async (roomId) => {
     try {
       const res = await axios.get(`${BASE_URL}/api/messages/${roomId}`);
       const msgs = res.data.map((msg) => ({
@@ -59,17 +53,33 @@ const ChatComponent = ({ currentUserId, managerUserId, user, title }) => {
     }
   };
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  const handleSelectUser = (userId) => {
+    if (selectedUser?.userId === userId) return;
+
+    const roomId = getRoomId(currentUserId, userId);
+    roomIdRef.current = roomId;
+    setSelectedUser({ userId });
+
+    getAllMessages(roomId);
+    connectSocket(roomId);
+  };
 
   const handleSend = (e) => {
     e.preventDefault();
+    if (!selectedUser) {
+      alert("Please select a user to chat with.");
+      return;
+    }
+
+    const receiverId = selectedUser.userId;
+    const roomId = getRoomId(currentUserId, receiverId);
+    roomIdRef.current = roomId;
+
     if (message.trim() && socketRef.current) {
       const msgObj = {
         roomId,
         senderId: currentUserId,
-        receiverId: managerUserId,
+        receiverId,
         message,
         user,
         time: new Date().toLocaleTimeString(),
@@ -79,10 +89,27 @@ const ChatComponent = ({ currentUserId, managerUserId, user, title }) => {
     }
   };
 
-  const getFilteredMessages = () => {
-    if (!selectedUser) return messages;
-    return messages.filter((msg) => msg.user?.name === selectedUser);
-  };
+  useEffect(() => {
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const managerList = Array.isArray(managerUserId)
+    ? managerUserId
+    : [managerUserId];
+
+  useEffect(() => {
+    if (showChat && managerList.length > 0 && !selectedUser) {
+      handleSelectUser(managerList[0]);
+    }
+  }, [showChat, managerList]);
 
   if (!showChat) {
     return (
@@ -110,38 +137,30 @@ const ChatComponent = ({ currentUserId, managerUserId, user, title }) => {
 
       {/* Body */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - User List */}
-        <div className="w-[30%] border-r p-2 overflow-y-auto">
-          {Array.from(
-            new Set(messages.map((msg) => msg.self === false && msg.user?.name))
-          )
-            .filter(Boolean)
-            .map((userName) => (
-              <div
-                key={userName}
-                className={`cursor-pointer text-sm px-2 py-1 rounded mb-1 ${
-                  selectedUser === userName
-                    ? "bg-blue-100 text-blue-700"
-                    : "hover:bg-gray-100"
-                }`}
-                onClick={() =>
-                  setSelectedUser(userName === selectedUser ? null : userName)
-                }
-              >
-                {userName}
-              </div>
-            ))}
+        {/* Sidebar - Manager ID List */}
+        <div className="w-[30%] border-r overflow-y-auto">
+          {managerList.map((id, idx) => (
+            <div
+              key={id}
+              className={`cursor-pointer text-sm px-2 py-1 rounded mb-1 whitespace-normal ${
+                selectedUser?.userId === id
+                  ? "bg-blue-100 text-blue-700"
+                  : "hover:bg-gray-100"
+              }`}
+              onClick={() => handleSelectUser(id)}
+            >
+              {allNames ? allNames[idx] : 'Manager ' + (idx + 1)}
+            </div>
+          ))}
         </div>
 
         {/* Chat Messages */}
         <div className="flex flex-col flex-1 p-2 overflow-hidden">
           <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-            {getFilteredMessages().map((msg, idx) => (
+            {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex ${
-                  msg.self ? "justify-end" : "justify-start"
-                }`}
+                className={`flex ${msg.self ? "justify-end" : "justify-start"}`}
               >
                 <div
                   className={`rounded-xl p-2 max-w-[70%] text-sm ${
@@ -149,7 +168,8 @@ const ChatComponent = ({ currentUserId, managerUserId, user, title }) => {
                   }`}
                 >
                   <div className="text-[10px] text-gray-600 mb-1">
-                    {msg.self ? "You" : msg.user?.name} • {msg.time}
+                    {msg.self ? "You" : msg.user?.name || msg.senderId} •{" "}
+                    {msg.time}
                   </div>
                   <div>{msg.message}</div>
                 </div>

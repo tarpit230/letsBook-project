@@ -34,11 +34,12 @@ const googleTokenVerification = async (req, res) => {
       path: "/",
     });
     return res.status(200).json({
-      userId: user._id,
+      _id: user._id,
       loggedIn: true,
       name: payload.name,
       email: payload.email,
-      role: "guest"
+      role: "guest",
+      isVerified: user.isVerified,
     });
   } catch (err) {
     return res.status(400).json({

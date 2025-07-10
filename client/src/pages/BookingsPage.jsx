@@ -43,7 +43,7 @@ export default function BookingsPage() {
                             <h2 className="text-xl">{booking?.place?.title}</h2>
                             <BookingDates booking={booking} className="items-center border-t border-gray-300 mt-2 py-2" />
                         </div>
-                        <div className="text-xl">
+                        <div className="text-xl p-2">
                             {differenceInCalendarDays(new Date(booking?.checkOut), new Date(booking?.checkIn))} nights
                             | Total Price: ${booking?.price}
                         </div>

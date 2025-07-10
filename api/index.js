@@ -71,6 +71,7 @@ io.on("connection", (socket) => {
       io.to(roomId).emit("chat message", {
         roomId,
         senderId,
+        receiverId,
         message,
         user,
         timestamp: chatMsg.timestamp,
