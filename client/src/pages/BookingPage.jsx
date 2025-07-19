@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AddressLink from "../AddressLink";
-import PlaceGallery from "../PlaceGallery";
-import BookingDates from "../BookingDates";
+import AddressLink from "../components/AddressLink";
+import PlaceGallery from "../components/PlaceGallery";
+import BookingDates from "../components/BookingDates";
 import ChatComponent from "../components/ChatComponent";
 import { UserContext } from "../store/UserContext";
 

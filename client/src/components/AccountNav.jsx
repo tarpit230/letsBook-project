@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { UserContext } from "./store/UserContext";
+import { UserContext } from "../store/UserContext";
 
 export default function AccountNav() {
   const { pathname } = useLocation();

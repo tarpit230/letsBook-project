@@ -1,8 +1,8 @@
 import { Link, useParams } from "react-router-dom";
-import AccountNav from "../AccountNav";
+import AccountNav from "../components/AccountNav";
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import PlaceImg from "../PlaceImg";
+import PlaceImg from "../components/PlaceImg";
 import ChatComponent from "../components/ChatComponent";
 import { UserContext } from "../store/UserContext";
 import { useToast } from "../store/ToastContext";

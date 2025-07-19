@@ -10,8 +10,8 @@ router.get("/user-places", auth, authorizeRoles('admin'), getUserPlacesControlle
 router.get("/places/:id", getPlacesWithIdController);
 router.put("/places", updatePlacesController);
 router.get("/places", getAllPlacesController);
-router.post("/bookings", createBookingController)
-router.get("/bookings", getBookingsById)
+router.post("/bookings", auth, createBookingController)
+router.get("/bookings", auth, getBookingsById)
 router.get("/bookings/all", getUserIdFromBookedPlace);
 
 module.exports = router;

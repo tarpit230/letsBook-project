@@ -1,6 +1,6 @@
 import { useToast } from "../store/ToastContext";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../App";
+import { BASE_URL } from "../config";
 import axios from "axios";
 import { useParams, useNavigate } from 'react-router-dom';
 

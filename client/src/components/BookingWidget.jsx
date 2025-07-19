@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { differenceInCalendarDays } from "date-fns";
 import axios from "axios";
-import { UserContext } from "./store/UserContext";
-import { useToast } from "./store/ToastContext";
+import { UserContext } from "../store/UserContext";
+import { useToast } from "../store/ToastContext";
 
 export default function BookingWidget({ place }) {
   const [checkIn, setCheckIn] = useState("");
@@ -14,6 +14,10 @@ export default function BookingWidget({ place }) {
   const [redirect, setRedirect] = useState("");
   const { user } = useContext(UserContext);
   const { showToast, Loader, loading, setLoading } = useToast();
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
 
   useEffect(() => {
     if (user) {
@@ -60,7 +64,7 @@ export default function BookingWidget({ place }) {
   }
 
   return (
-    <div className="bg-white shadow p-4 rounded-2xl">
+    <div className="bg-white border shadow p-4 rounded-2xl">
       <div className="text-2xl text-center">
         Price: ${place.price} / per night
       </div>
@@ -70,6 +74,7 @@ export default function BookingWidget({ place }) {
             <label>Check in:</label>
             <input
               type="date"
+              min={new Date().toISOString().split("T")[0]}
               value={checkIn}
               onChange={(ev) => setCheckIn(ev.target.value)}
             />
@@ -78,6 +83,7 @@ export default function BookingWidget({ place }) {
             <label>Check out:</label>
             <input
               type="date"
+              min={minDate}
               value={checkOut}
               onChange={(ev) => setCheckOut(ev.target.value)}
             />

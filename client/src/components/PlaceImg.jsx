@@ -1,4 +1,4 @@
-import { BASE_URL } from "./App";
+import { BASE_URL } from "../config";
 
 export default function PlaceImg({place, index=0,className=null}){
     if(!place?.photos?.length){

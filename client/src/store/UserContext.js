@@ -28,8 +28,13 @@ export function UserContextProvider({ children }) {
     }
   }, []);
 
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  }
+
   return (
-    <UserContext.Provider value={{ user, setUser, ready, setReady }}>
+    <UserContext.Provider value={{ user, setUser, ready, setReady, logout }}>
       {children}
     </UserContext.Provider>
   );

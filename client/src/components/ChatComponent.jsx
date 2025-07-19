@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
-import { BASE_URL } from "../App";
+import { BASE_URL } from "../config";
 
 const ChatComponent = ({ currentUserId, managerUserId, user, title, allNames }) => {
   const [showChat, setShowChat] = useState(false);

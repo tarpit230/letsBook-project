@@ -2,7 +2,7 @@ import axios from "axios";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { useToast } from "../store/ToastContext";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../App";
+import { BASE_URL } from "../config";
 
 export default function ForgotPassword({ setShowDialog }) {
     const { showToast, Loader, loading, setLoading } = useToast();

@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { UserContext } from "./store/UserContext";
+import { UserContext } from "../store/UserContext";
 import axios from "axios";
 
 export default function Header() {
@@ -23,7 +23,7 @@ export default function Header() {
   
 
   return (
-    <header className="flex justify-between">
+    <header className="flex justify-between px-8">
       <Link to={"/"} className="flex items-center gap-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"

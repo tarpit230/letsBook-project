@@ -1,5 +1,5 @@
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { BASE_URL } from "../App";
+import { BASE_URL } from "../config";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../store/UserContext";
 import { useContext } from "react";

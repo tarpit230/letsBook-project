@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { BASE_URL } from "../App";
+import { BASE_URL } from "../config";
 import { useToast } from "../store/ToastContext";
 import { UserContext } from "../store/UserContext";
 
