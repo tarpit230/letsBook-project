@@ -12,7 +12,7 @@ const placesAndBookingRoutes = require("./routes/placesAndBookings.js");
 const { authorizeRoles, auth } = require("./middlewares/auth.js");
 const http = require("http");
 const { Server } = require("socket.io");
-// const { createServer } = require('node:http');
+const helmet = require("helmet");
 require("dotenv").config();
 
 const app = express();
@@ -33,6 +33,15 @@ const io = new Server(server, {
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet.hidePoweredBy());
+app.use(helmet.frameguard({ action: 'deny' }));
+app.use(helmet.xssFilter());
+app.use(helmet.noSniff());
+app.use(helmet.hsts({
+  maxAge: 31536000,
+  includeSubDomains: true,
+  preload: true
+}));
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use(
   cors({
@@ -111,6 +120,21 @@ app.get("/profile", (req, res) => {
   } else {
     res.json({ message: "No User Found" });
   }
+});
+
+// app.get('/test-error', (req, res, next) => {
+//   const err = new Error('This is a test error');
+//   err.status = 400;
+//   next(err); 
+// });
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack); 
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal Server Error',
+  });
 });
 
 

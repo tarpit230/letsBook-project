@@ -3,35 +3,46 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-async function loginController(req, res) {
+async function loginController(req, res, next) {
   const { email, password } = req.body;
 
-  const userDoc = await User.findOne({ email });
-  if (userDoc) {
-    const passOk = bcrypt.compareSync(password, userDoc.password);
-    if (passOk) {
-      jwt.sign(
-        { email: userDoc.email, id: userDoc._id, role: userDoc.role },
-        process.env.JWT_SECRET,
-        {},
-        (err, token) => {
-          if (err) throw err;
-          res
-            .cookie("token", token, {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === "production", // only send over HTTPS in production
-              sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // needed for cross-origin
-              maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
-              path: "/",
-            })
-            .json(userDoc);
-        }
-      );
-    } else {
-      res.status(422).json("Incorrect password");
+  try {
+    const userDoc = await User.findOne({ email });
+
+    if (!userDoc) {
+      const error = new Error("Invalid credentials!");
+      error.status = 401;
+      return next(error);
     }
-  } else {
-    res.status(401).json({ message: "Invalid credentials!" });
+
+    const passOk = bcrypt.compareSync(password, userDoc.password);
+    if (!passOk) {
+      const error = new Error("Incorrect password");
+      error.status = 422;
+      return next(error);
+    }
+
+    jwt.sign(
+      { email: userDoc.email, id: userDoc._id, role: userDoc.role },
+      process.env.JWT_SECRET,
+      {},
+      (err, token) => {
+        if (err) return next(err);
+
+        res
+          .cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            path: "/",
+          })
+          .json(userDoc);
+      }
+    );
+  } catch (error) {
+    error.status = 500;
+    next(error);
   }
 }
 
